@@ -7,10 +7,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --primary: #2563eb;
-            --background: #f8fafc;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             --surface: #ffffff;
-            --text: #1e293b;
+            --text: #0f172a;
             --border: #cbd5e1;
             --warning: #f59e0b;
             --success: #10b981;
@@ -18,34 +19,48 @@
 
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--background);
+            background: var(--background);
             color: var(--text);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
 
         .container {
             background-color: var(--surface);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
             max-width: 850px;
             width: 100%;
+        }
+
+        /* Logo Styling */
+        .form-logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-logo {
+            max-width: 140px;
+            height: auto;
+            object-fit: contain;
+            display: inline-block;
         }
 
         .header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--background);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
         }
 
         .header-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--primary);
             margin: 0;
@@ -54,10 +69,11 @@
         .nav-buttons-small {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
         .btn-sm {
-            padding: 6px 14px;
+            padding: 7px 16px;
             font-size: 13px;
             font-weight: 600;
             border: 1px solid var(--border);
@@ -72,16 +88,17 @@
             background-color: var(--primary);
             color: white;
             border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .page { display: none; }
         .page.active { display: block; }
 
-        .form-group { margin-bottom: 14px; }
+        .form-group { margin-bottom: 16px; }
 
         .form-row {
             display: flex;
-            gap: 14px;
+            gap: 16px;
         }
 
         .form-row .form-group {
@@ -92,52 +109,92 @@
             display: block;
             font-weight: 600;
             font-size: 13px;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            color: #334155;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 9px 11px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
             box-sizing: border-box;
             font-size: 14px;
             font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
         }
 
         input[readonly] {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             color: var(--primary);
             font-weight: 700;
         }
 
         textarea {
             resize: vertical;
-            height: 65px;
+            height: 70px;
         }
+        
+        .btn-add-item {
+            background-color: #e0e7ff;
+            color: var(--primary);
+            border: 1.5px dashed var(--primary);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        .btn-add-item:hover { background-color: #c7d2fe; }
+        
+        .btn-remove-item {
+            background-color: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .btn-remove-item:hover { background-color: #ef4444; color: white; }
 
         .log-header-actions {
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .search-box-short {
-            width: 280px;
+            width: 300px;
         }
 
         .search-box-short input {
-            padding: 7px 12px;
+            padding: 8px 14px;
             font-size: 13px;
             border: 1.5px solid var(--primary);
-            background-color: #eff6ff;
-            border-radius: 6px;
+            background-color: #eef2ff;
+            border-radius: 8px;
         }
 
         .canvas-container, .photo-container {
             border: 2px dashed var(--border);
-            border-radius: 6px;
-            background-color: #fff;
+            border-radius: 8px;
+            background-color: #f8fafc;
             touch-action: none;
             height: 180px; 
             display: flex;
@@ -163,95 +220,66 @@
 
         .photo-placeholder {
             color: #94a3b8;
-            font-size: 12px;
+            font-size: 13px;
             text-align: center;
         }
 
         .action-buttons {
             display: flex;
-            gap: 12px;
-            margin-top: 18px;
+            gap: 16px;
+            margin-top: 24px;
         }
 
-        .btn-submit {
+        .btn-submit, .btn-draft {
             flex: 1;
             padding: 12px;
-            background-color: var(--primary);
-            color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
-        .btn-draft {
-            flex: 1;
-            padding: 12px;
-            background-color: var(--warning);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .btn-submit { background-color: var(--primary); color: white; }
+        .btn-submit:hover { background-color: var(--primary-hover); }
 
-        .btn-submit:hover { background-color: #1d4ed8; }
+        .btn-draft { background-color: var(--warning); color: white; }
         .btn-draft:hover { background-color: #d97706; }
 
-        .btn-clear, .btn-upload {
-            background-color: #ef4444;
-            color: white;
+        .btn-clear, .btn-upload, .btn-add-sig {
             border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 11px;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
             cursor: pointer;
-            margin-top: 5px;
-        }
-
-        .btn-add-sig {
-            background-color: #059669;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 11px;
-            cursor: pointer;
-            margin-top: 5px;
-            margin-left: 6px;
-        }
-
-        .btn-upload {
-            background-color: #059669;
-            display: inline-block;
+            margin-top: 6px;
             font-weight: 600;
         }
+
+        .btn-clear { background-color: #fee2e2; color: #ef4444; }
+        .btn-add-sig { background-color: #d1fae5; color: #047857; margin-left: 6px; }
+        .btn-upload { background-color: #e0e7ff; color: var(--primary); display: inline-block; width: 100%; text-align: center; box-sizing: border-box; padding: 8px; }
 
         .btn-view-pdf {
             background-color: #10b981;
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 11px;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
         }
-
-        .btn-view-pdf:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-        }
+        .btn-view-pdf:hover { background-color: #059669; }
 
         .btn-mini {
             border: none;
-            border-radius: 4px;
-            padding: 4px 9px;
-            font-size: 10px;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             margin-top: 4px;
@@ -260,30 +288,42 @@
         }
 
         .btn-mini-sign { background-color: var(--primary); }
-        .btn-mini-photo { background-color: var(--warning); }
+        .btn-mini-photo { background-color: #d97706; }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         th, td {
             border: 1px solid var(--border);
-            padding: 8px 10px;
+            padding: 10px 12px;
             text-align: left;
-            vertical-align: middle;
+            vertical-align: top;
+            white-space: pre-line;
         }
 
-        th { background-color: #f1f5f9; }
-        .sig-preview, .img-preview { max-width: 70px; max-height: 45px; border-radius: 4px; }
-        .no-data { text-align: center; color: #94a3b8; }
-        .note-text { color: #64748b; font-size: 11px; display: block; }
+        th { background-color: #f8fafc; vertical-align: middle; color: #334155; font-weight: 700; }
+        
+        /* สไตล์ตาราง View: หัวข้อตัวหนา, ข้อมูลข้อความธรรมดา */
+        .log-table-th {
+            font-weight: bold !important;
+            color: #1e293b;
+        }
+        .log-table-td {
+            font-weight: normal !important;
+            color: #334155;
+        }
+
+        .sig-preview, .img-preview { max-width: 80px; max-height: 50px; border-radius: 6px; border: 1px solid var(--border); }
+        .no-data { text-align: center; color: #94a3b8; padding: 20px; }
+        .note-text { color: #64748b; font-size: 11px; display: block; margin-top: 4px; font-weight: normal; }
 
         .status-badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
             font-size: 11px;
             font-weight: 700;
             text-align: center;
@@ -293,22 +333,24 @@
 
         .form-copyright {
             text-align: center;
-            margin-top: 24px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
+            margin-top: 30px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
             font-size: 12px;
             color: #64748b;
         }
 
         .table-responsive {
             overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .pdf-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(15, 23, 42, 0.6);
+            background-color: rgba(15, 23, 42, 0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -318,36 +360,36 @@
 
         .pdf-modal-box {
             background-color: var(--surface);
-            border-radius: 10px;
+            border-radius: 12px;
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             height: 90vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
         }
 
         .pdf-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border);
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .pdf-modal-header-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn-modal-print, .btn-modal-close {
             border: none;
-            border-radius: 6px;
-            padding: 7px 14px;
+            border-radius: 8px;
+            padding: 8px 16px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -367,7 +409,7 @@
         .login-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--background);
+            background: var(--background);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -378,30 +420,30 @@
 
         .login-box {
             background-color: var(--surface);
-            padding: 32px 28px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 36px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 340px;
+            max-width: 360px;
             text-align: center;
         }
 
         .login-icon {
-            font-size: 34px;
-            margin-bottom: 6px;
+            font-size: 40px;
+            margin-bottom: 8px;
         }
 
         .login-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary);
-            margin: 0 0 4px 0;
+            margin: 0 0 6px 0;
         }
 
         .login-subtitle {
-            font-size: 12px;
+            font-size: 13px;
             color: #64748b;
-            margin: 0 0 20px 0;
+            margin: 0 0 24px 0;
         }
 
         .login-box .form-group {
@@ -410,36 +452,37 @@
 
         .btn-login {
             width: 100%;
-            padding: 11px;
+            padding: 12px;
             background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 6px;
+            margin-top: 8px;
             transition: background 0.2s;
         }
 
-        .btn-login:hover { background-color: #1d4ed8; }
+        .btn-login:hover { background-color: var(--primary-hover); }
 
         .login-error {
             color: #ef4444;
             font-size: 12px;
             font-weight: 600;
-            margin-top: 10px;
+            margin-top: 12px;
             min-height: 16px;
         }
 
         .app-wrapper { display: none; }
 
         .logged-in-badge {
-            font-size: 11px;
-            color: #64748b;
+            font-size: 12px;
+            color: #475569;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 500;
         }
 
         .btn-logout {
@@ -447,11 +490,13 @@
             background-color: #fff;
             color: #ef4444;
             border-radius: 20px;
-            padding: 4px 12px;
+            padding: 5px 12px;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .btn-logout:hover { background-color: #fee2e2; }
     </style>
 </head>
 <body>
@@ -481,6 +526,12 @@
 
 <div class="app-wrapper" id="appWrapper">
 <div class="container">
+    
+    <!-- โลโก้อยู่ตรงกลางด้านบนสุดของ Form -->
+    <div class="form-logo-container">
+        <img src="https://lh3.googleusercontent.com/d/1M_0_hQ8S_x_FnaszHUBLssZE0_TPmPY-" alt="System Logo" class="form-logo" crossorigin="anonymous">
+    </div>
+
     <div class="header-bar">
         <h1 class="header-title" id="pageTitle">📝 Equipment Handover Form</h1>
         <div class="nav-buttons-small">
@@ -496,15 +547,25 @@
     <!-- Form Page -->
     <div id="formPage" class="page active">
         <form id="handoverForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Asset Tag: <span style="color:red;">*</span></label>
-                    <input type="text" id="assetTag" required placeholder="e.g., LAP-2026-001">
+            
+            <div id="itemsContainer">
+                <div class="form-row item-row">
+                    <div class="form-group">
+                        <label>Asset Tag: <span style="color:red;">*</span></label>
+                        <input type="text" class="asset-tag" required placeholder="e.g., LAP-2026-001">
+                    </div>
+                    <div class="form-group">
+                        <label>Serial Number (S/N): <span style="color:red;">*</span></label>
+                        <input type="text" class="serial-no" required placeholder="e.g., SN-987654321">
+                    </div>
+                    <div class="form-group" style="flex: 0 0 auto; display: flex; align-items: flex-end; padding-bottom: 4px;">
+                        <button type="button" class="btn-remove-item" onclick="removeItemRow(this)" style="display: none;">❌</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Serial Number (S/N): <span style="color:red;">*</span></label>
-                    <input type="text" id="serialNo" required placeholder="e.g., SN-987654321">
-                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <button type="button" class="btn-add-item" onclick="addItemRow()">➕ Add Another Item</button>
             </div>
 
             <div class="form-row">
@@ -543,8 +604,10 @@
                     <div class="canvas-container">
                         <canvas id="sigCanvas"></canvas>
                     </div>
-                    <button type="button" class="btn-clear" id="clearCanvasBtn">Clear Signature</button>
-                    <button type="button" class="btn-add-sig" onclick="document.getElementById('sigFileInput').click()">➕ Add Signature</button>
+                    <div style="display: flex; gap: 4px;">
+                        <button type="button" class="btn-clear" id="clearCanvasBtn">Clear Signature</button>
+                        <button type="button" class="btn-add-sig" onclick="document.getElementById('sigFileInput').click()">➕ Add Signature</button>
+                    </div>
                     <input type="file" id="sigFileInput" accept="image/*" style="display: none;">
                 </div>
 
@@ -602,16 +665,16 @@
             <table id="logTable">
                 <thead>
                     <tr>
-                        <th>Form ID</th>
-                        <th>Timestamp</th>
-                        <th>Asset Tag / S/N</th>
-                        <th>Sender</th>
-                        <th>Receiver</th>
-                        <th>Condition</th>
-                        <th>Note</th>
-                        <th>Signature</th>
-                        <th>Photo</th>
-                        <th>Action</th>
+                        <th class="log-table-th">Form ID</th>
+                        <th class="log-table-th">Timestamp</th>
+                        <th class="log-table-th">Asset Tag / S/N</th>
+                        <th class="log-table-th">Sender</th>
+                        <th class="log-table-th">Receiver</th>
+                        <th class="log-table-th">Condition</th>
+                        <th class="log-table-th">Note</th>
+                        <th class="log-table-th">Signature</th>
+                        <th class="log-table-th">Photo</th>
+                        <th class="log-table-th">Action</th>
                     </tr>
                 </thead>
                 <tbody id="logTableBody">
@@ -624,25 +687,17 @@
 </div><!-- /#appWrapper -->
 
 <script>
-    // ตรวจสอบ URL ให้มั่นใจว่าเป็นลิงก์ Web App ล่าสุด
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjYiSZ4RnlVEaPjkSfkw5WwESgMjePeYq4dMG4ZC_jl05xBPS5lMYZecm6XTJpeOI-/exec';
-
-    // ลิงก์แยกต่างหากสำหรับ Apps Script ที่ผูกกับชีท "Users" โดยเฉพาะ — คนละ deployment กับของด้านบน
-    // ไม่เกี่ยวข้องกัน แก้/พังอันไหนก็ไม่กระทบอีกอัน
-    // 👉 ใส่ลิงก์ Web App ของสคริปต์ Users ตรงนี้ (ดู URL จาก Deploy > Manage deployments ของสคริปต์ Users)
     const GOOGLE_SCRIPT_USERS_URL = 'https://script.google.com/macros/s/AKfycbxQ1RN1kFNV3Jgt7aVtgNS8RCaIT_aDKAvV2HvSIUBHWcEbYmuU1kRyarAVAtDyqV8t/exec';
+    const LOGO_IMAGE_URL = 'https://lh3.googleusercontent.com/d/1M_0_hQ8S_x_FnaszHUBLssZE0_TPmPY-';
 
     let photoBase64 = "";
     let logsData = []; 
-    let formCounter = Math.floor(100 + Math.random() * 900); // สุ่มตัวเลข 3 หลักเพื่อกันซ้ำชั่วคราว
     let isCanvasSigned = false;
-    let currentPdfBlobUrl = ""; // เก็บ Blob URL ของ PDF ที่กำลังแสดงในป๊อปอัพ
+    let currentPdfBlobUrl = ""; 
 
-    // ===== Login System =====
-    // หมายเหตุ: บัญชีนี้ฝังไว้ในโค้งฝั่ง frontend เพื่อความสะดวกตามที่ร้องขอ
-    // ไม่ได้เก็บสถานะไว้ข้าม session (ไม่ใช้ localStorage/sessionStorage) — รีเฟรชหน้าแล้วต้องล็อกอินใหม่
     const VALID_CREDENTIALS = { username: 'Admin', password: 'Maglao@20' };
-    let currentUser = null; // ผู้ใช้ที่ล็อกอินอยู่ (เก็บในหน่วยความจำเท่านั้น)
+    let currentUser = null; 
 
     function handleLogin(evt) {
         evt.preventDefault();
@@ -671,22 +726,31 @@
         document.getElementById('loginUser').focus();
     }
 
-    // Admin ไม่ต้องเลือกชื่อผู้ใช้เอง เพราะหน้า Login เลือก Admin ให้อยู่แล้ว (ดู handleLogin)
-    // หมายเหตุ: ฟังก์ชันนี้ไม่ยุ่งกับช่อง Sender ในฟอร์มอีกต่อไป — ช่อง Sender ใช้ dropdown แบบเดิมทุกประการ
-    function applyAdminAutofill() {
-        // no-op: เก็บฟังก์ชันไว้เผื่อเรียกใช้จากที่อื่น แต่ไม่มีผลใดๆ กับฟอร์มแล้ว
-    }
-
     function initAppAfterLogin() {
         fetchLogsFromSheet();
         fetchUsersFromSheet();
     }
 
-    function generateFormId() {
-        return 'EHF' + String(formCounter).padStart(3, '0');
+    // ฟังก์ชันสร้าง Form ID แบบเรียงลำดับต่อเนื่อง (EHF001, EHF002, ...)
+    function generateNextFormId() {
+        let maxIdNum = 0;
+        if (logsData && logsData.length > 0) {
+            logsData.forEach(item => {
+                if (item.formId && item.formId.startsWith('EHF')) {
+                    const numPart = parseInt(item.formId.replace('EHF', ''), 10);
+                    if (!isNaN(numPart) && numPart > maxIdNum) {
+                        maxIdNum = numPart;
+                    }
+                }
+            });
+        }
+        const nextNum = maxIdNum + 1;
+        return 'EHF' + String(nextNum).padStart(3, '0');
     }
 
-    document.getElementById('formId').value = generateFormId();
+    function updateFormIdField() {
+        document.getElementById('formId').value = generateNextFormId();
+    }
 
     function switchPage(pageId) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -697,13 +761,68 @@
         if (pageId === 'formPage') {
             document.querySelectorAll('.nav-buttons-small .btn-sm')[0].classList.add('active');
             document.getElementById('pageTitle').innerText = '📝 Equipment Handover Form';
+            updateFormIdField(); // อัปเดตเลข Form ID ให้เป็นลำดับถัดไปเมื่อเปิดหน้า Form
             setTimeout(resizeCanvas, 100);
         } else {
             document.querySelectorAll('.nav-buttons-small .btn-sm')[1].classList.add('active');
             document.getElementById('pageTitle').innerText = '📋 Handover Logs & History';
-            // ดึงข้อมูลจาก Sheet ทุกครั้งที่เปิดหน้า Log
             fetchLogsFromSheet(); 
         }
+    }
+
+    function addItemRow() {
+        const container = document.getElementById('itemsContainer');
+        const row = document.createElement('div');
+        row.className = 'form-row item-row';
+        row.innerHTML = `
+            <div class="form-group">
+                <label>Asset Tag: <span style="color:red;">*</span></label>
+                <input type="text" class="asset-tag" required placeholder="e.g., LAP-2026-001">
+            </div>
+            <div class="form-group">
+                <label>Serial Number (S/N): <span style="color:red;">*</span></label>
+                <input type="text" class="serial-no" required placeholder="e.g., SN-987654321">
+            </div>
+            <div class="form-group" style="flex: 0 0 auto; display: flex; align-items: flex-end; padding-bottom: 4px;">
+                <button type="button" class="btn-remove-item" onclick="removeItemRow(this)">❌</button>
+            </div>
+        `;
+        container.appendChild(row);
+        updateRemoveButtons();
+    }
+
+    function removeItemRow(btn) {
+        btn.closest('.item-row').remove();
+        updateRemoveButtons();
+    }
+
+    function updateRemoveButtons() {
+        const rows = document.querySelectorAll('.item-row');
+        rows.forEach((row) => {
+            const removeBtn = row.querySelector('.btn-remove-item');
+            if (removeBtn) {
+                removeBtn.style.display = rows.length > 1 ? 'flex' : 'none';
+            }
+        });
+    }
+
+    function resetItems() {
+        const container = document.getElementById('itemsContainer');
+        container.innerHTML = `
+            <div class="form-row item-row">
+                <div class="form-group">
+                    <label>Asset Tag: <span style="color:red;">*</span></label>
+                    <input type="text" class="asset-tag" required placeholder="e.g., LAP-2026-001">
+                </div>
+                <div class="form-group">
+                    <label>Serial Number (S/N): <span style="color:red;">*</span></label>
+                    <input type="text" class="serial-no" required placeholder="e.g., SN-987654321">
+                </div>
+                <div class="form-group" style="flex: 0 0 auto; display: flex; align-items: flex-end; padding-bottom: 4px;">
+                    <button type="button" class="btn-remove-item" onclick="removeItemRow(this)" style="display: none;">❌</button>
+                </div>
+            </div>
+        `;
     }
 
     const canvas = document.getElementById('sigCanvas');
@@ -712,11 +831,6 @@
     function resizeCanvas() {
         const rect = canvas.getBoundingClientRect();
         if (rect.width <= 0) return;
-
-        // สำคัญ: การตั้งค่า canvas.width/height จะล้างภาพที่วาดไว้ทิ้งทันที แม้ค่าจะเท่าเดิมก็ตาม
-        // เดิมโค้ดนี้ทำงานทุกครั้งที่ window resize (เช่น คีย์บอร์ดมือถือเด้งขึ้นตอนพิมพ์ช่องอื่น)
-        // ทำให้ลายเซ็นที่เซ็นไว้แล้วหายไปโดยไม่รู้ตัว จึงแก้ให้ resize เฉพาะตอนขนาดเปลี่ยนจริง
-        // และเก็บลายเซ็นเดิมไว้วาดกลับคืนหลัง resize เสมอ
         const sizeChanged = (canvas.width !== rect.width || canvas.height !== rect.height);
         if (!sizeChanged) {
             ctx.lineWidth = 2;
@@ -752,7 +866,6 @@
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             return { x: clientX - rect.left, y: clientY - rect.top };
         }
-
         function startDraw(e) {
             isDrawVar.val = true;
             if (onDrawCallback) onDrawCallback();
@@ -760,7 +873,6 @@
             context.beginPath();
             context.moveTo(pos.x, pos.y);
         }
-
         function moveDraw(e) {
             if (!isDrawVar.val) return;
             e.preventDefault();
@@ -768,14 +880,12 @@
             context.lineTo(pos.x, pos.y);
             context.stroke();
         }
-
         function stopDraw() { isDrawVar.val = false; }
 
         c.addEventListener('mousedown', startDraw);
         c.addEventListener('mousemove', moveDraw);
         c.addEventListener('mouseup', stopDraw);
         c.addEventListener('mouseleave', stopDraw);
-
         c.addEventListener('touchstart', startDraw, { passive: false });
         c.addEventListener('touchmove', moveDraw, { passive: false });
         c.addEventListener('touchend', stopDraw);
@@ -789,11 +899,9 @@
         isCanvasSigned = false;
     });
 
-    // ปุ่ม "Add Signature": เลือกรูปลายเซ็นจากเครื่อง แล้ววางไว้กึ่งกลางผ้าใบ (คงอัตราส่วนเดิม ไม่ยืด/บีบ)
     document.getElementById('sigFileInput').addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function (evt) {
             const img = new Image();
@@ -810,8 +918,6 @@
             img.src = evt.target.result;
         };
         reader.readAsDataURL(file);
-
-        // เคลียร์ค่า input ไว้ เผื่อผู้ใช้อยากเลือกไฟล์เดิมซ้ำอีกครั้ง
         e.target.value = '';
     });
 
@@ -823,7 +929,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvasPhoto = document.createElement('canvas');
-                    const MAX_WIDTH = 400; // ลดขนาดรูปเพื่อให้ Google Sheet ทำงานเร็วขึ้น
+                    const MAX_WIDTH = 400; 
                     const scaleSize = MAX_WIDTH / img.width;
                     canvasPhoto.width = MAX_WIDTH;
                     canvasPhoto.height = img.height * scaleSize;
@@ -831,7 +937,7 @@
                     const ctxPhoto = canvasPhoto.getContext('2d');
                     ctxPhoto.drawImage(img, 0, 0, canvasPhoto.width, canvasPhoto.height);
 
-                    photoBase64 = canvasPhoto.toDataURL('image/jpeg', 0.6); // ย่อขนาด Base64 60%
+                    photoBase64 = canvasPhoto.toDataURL('image/jpeg', 0.6);
 
                     const photoPreview = document.getElementById('photoPreview');
                     const photoPlaceholder = document.getElementById('photoPlaceholder');
@@ -845,7 +951,6 @@
         }
     });
 
-    // 1. ฟังก์ชันส่งข้อมูลเข้า Google Sheet (แก้ไขโหมด no-cors ออก)
     async function sendToGoogleSheet(recordData) {
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -853,30 +958,25 @@
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(recordData)
             });
-            const result = await response.json();
-            return result;
+            return await response.json();
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", error);
             throw error;
         }
     }
 
-    // 1.5 ฟังก์ชันดึงรายชื่อ Users จากชีท "Users" มาใส่ใน Dropdown ของ Sender/Receiver
-    let usersList = []; // แคชรายชื่อไว้ ไม่ต้องยิงซ้ำทุกครั้งที่กลับมาหน้าฟอร์ม
+    let usersList = []; 
 
     async function fetchUsersFromSheet() {
         try {
-            // ใช้ลิงก์แยกของสคริปต์ Users โดยเฉพาะ ไม่ยุ่งกับ GOOGLE_SCRIPT_URL ของ log เลย
             const response = await fetch(GOOGLE_SCRIPT_USERS_URL);
             const data = await response.json();
-
             if (data && Array.isArray(data) && data.length > 0) {
                 usersList = data;
             } else {
                 usersList = [];
             }
         } catch (error) {
-            console.error("เกิดข้อผิดพลาดในการดึงรายชื่อ Users:", error);
             usersList = [];
         }
         populateUserDropdowns();
@@ -885,11 +985,8 @@
     function populateUserDropdowns() {
         const senderSelect = document.getElementById('senderName');
         const receiverSelect = document.getElementById('receiverName');
-
-        // เก็บค่าที่เลือกไว้เดิม (เผื่อกรณี refresh ระหว่างที่ผู้ใช้เลือกไว้แล้ว หรือกำลังแก้ไข Draft)
         const prevSender = senderSelect.value;
         const prevReceiver = receiverSelect.value;
-
         const optionsHTML = usersList.length > 0
             ? '<option value="">-- Select Name --</option>' +
               usersList.map(name => `<option value="${name}">${name}</option>`).join('')
@@ -897,54 +994,75 @@
 
         senderSelect.innerHTML = optionsHTML;
         receiverSelect.innerHTML = optionsHTML;
-
-        // คืนค่าที่เคยเลือกไว้กลับเข้าไป ถ้ายังอยู่ในลิสต์
         if (usersList.includes(prevSender)) senderSelect.value = prevSender;
         if (usersList.includes(prevReceiver)) receiverSelect.value = prevReceiver;
-
-        // ถ้าล็อกอินเป็น Admin อยู่ ให้เติมชื่อ Admin ลงช่อง Sender อัตโนมัติทุกครั้งที่ dropdown ถูกโหลดใหม่
-        applyAdminAutofill();
     }
 
-    // 2. ฟังก์ชันดึงข้อมูลจาก Google Sheet (เพิ่มใหม่)
     async function fetchLogsFromSheet() {
         const tbody = document.getElementById('logTableBody');
         tbody.innerHTML = '<tr><td colspan="10" class="no-data">Loading data from Google Sheet... ⏳</td></tr>';
-        
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL);
             const data = await response.json();
-            
             if (data && Array.isArray(data)) {
-                logsData = data.reverse(); // เรียงข้อมูลใหม่สุดขึ้นก่อน
+                logsData = data.reverse(); 
                 renderTable();
+                updateFormIdField(); // อัปเดต Form ID อัตโนมัติตามข้อมูลล่าสุด
             } else {
                 tbody.innerHTML = '<tr><td colspan="10" class="no-data">No handover records found.</td></tr>';
             }
         } catch (error) {
-            console.error("Error fetching logs:", error);
             tbody.innerHTML = '<tr><td colspan="10" class="no-data" style="color:red;">Error loading data. Check console.</td></tr>';
         }
     }
 
+    function formatLocalDate(dateString) {
+        if (!dateString) return '-';
+        const d = new Date(dateString);
+        if (isNaN(d.getTime())) return dateString; 
+
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        return d.toLocaleString('sv-SE', options).replace('t', ' '); 
+    }
+
     async function saveData(status) {
-        const currentFormId = document.getElementById('formId').value;
-        const assetTag = document.getElementById('assetTag').value.trim();
-        const serialNo = document.getElementById('serialNo').value.trim();
+        const baseFormId = document.getElementById('formId').value;
         const senderName = document.getElementById('senderName').value.trim();
         const receiverName = document.getElementById('receiverName').value.trim();
         const condition = document.getElementById('condition').value;
         const note = document.getElementById('note').value.trim();
+        
+        const itemRows = document.querySelectorAll('.item-row');
+        let assetTagsArr = [];
+        let serialNosArr = [];
+        let hasEmptyItems = false;
+
+        itemRows.forEach((row, index) => {
+            const asset = row.querySelector('.asset-tag').value.trim();
+            const sn = row.querySelector('.serial-no').value.trim();
+            if (!asset || !sn) hasEmptyItems = true;
+            
+            assetTagsArr.push(`${index + 1}. ${asset}`);
+            serialNosArr.push(`${index + 1}. ${sn}`);
+        });
 
         if (status === 'pending') {
-            if (!assetTag || !serialNo || !senderName || !receiverName) {
+            if (hasEmptyItems || !senderName || !receiverName) {
                 alert('Please fill in required fields (Asset Tag, S/N, Sender, Receiver) to save draft.');
                 return;
             }
         }
 
         if (status === 'completed') {
-            if (!assetTag || !serialNo || !senderName || !receiverName || !condition || !note) {
+            if (hasEmptyItems || !senderName || !receiverName || !condition || !note) {
                 alert('Please fill in ALL fields before submitting!');
                 return;
             }
@@ -958,51 +1076,60 @@
             }
         }
 
-        let sigDataUrl = "";
-        if (status === 'completed' && isCanvasSigned) {
-            sigDataUrl = canvas.toDataURL('image/png');
-        }
-
-        const newRecord = {
-            formId: currentFormId,
-            timestamp: new Date().toLocaleString('en-US'),
-            assetTag: assetTag,
-            serialNo: serialNo,
-            senderName: senderName,
-            receiverName: receiverName,
-            condition: condition,
-            note: note,
-            status: status,
-            sigDataUrl: sigDataUrl,
-            photoBase64: photoBase64
-        };
-
         const submitBtn = document.getElementById('btnSubmit');
         const draftBtn = document.getElementById('btnDraft');
         submitBtn.disabled = true;
         draftBtn.disabled = true;
         submitBtn.innerHTML = "Saving...";
 
+        let sigDataUrl = "";
+        if (status === 'completed' && isCanvasSigned) {
+            sigDataUrl = canvas.toDataURL('image/png');
+        }
+
         try {
+            const finalAssetTag = assetTagsArr.join('\n');
+            const finalSerialNo = serialNosArr.join('\n');
+
+            const now = new Date();
+            const formattedTimestamp = now.getFullYear() + '-' +
+                String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                String(now.getDate()).padStart(2, '0') + ' ' +
+                String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0') + ':' +
+                String(now.getSeconds()).padStart(2, '0');
+
+            const newRecord = {
+                formId: baseFormId,
+                timestamp: formattedTimestamp,
+                assetTag: finalAssetTag,
+                serialNo: finalSerialNo,
+                senderName: senderName,
+                receiverName: receiverName,
+                condition: condition,
+                note: note,
+                status: status,
+                sigDataUrl: sigDataUrl,
+                photoBase64: photoBase64
+            };
+            
             await sendToGoogleSheet(newRecord);
             
-            formCounter++;
             document.getElementById('handoverForm').reset();
-            document.getElementById('formId').value = generateFormId();
+            resetItems(); 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             isCanvasSigned = false;
             document.getElementById('photoPreview').style.display = 'none';
             document.getElementById('photoPlaceholder').style.display = 'block';
             photoBase64 = "";
-            applyAdminAutofill();
 
             if (status === 'pending') {
-                alert(`Draft ${currentFormId} saved!`);
+                alert(`Draft saved!`);
             } else {
-                alert(`Handover record ${currentFormId} submitted successfully!`);
+                alert(`Handover record submitted successfully!`);
             }
 
-            switchPage('logPage'); // สลับไปหน้าประวัติ ข้อมูลจะโหลดใหม่ทันที
+            switchPage('logPage'); 
 
         } catch (error) {
             alert('Failed to save data. Please try again.');
@@ -1013,24 +1140,45 @@
         }
     }
 
-    // 4. ฟังก์ชันดึงข้อมูล Draft (Pending) กลับเข้าหน้าฟอร์ม เพื่อให้เซ็นชื่อ/ถ่ายรูปคืนแล้วส่งใหม่
     function continueDraft(index) {
         const item = logsData[index];
         if (!item) { alert('Record not found'); return; }
         if (item.status !== 'pending') { return; }
 
         switchPage('formPage');
-
-        // เติมข้อมูลเดิมกลับเข้าฟอร์ม โดยใช้ Form ID เดิม เพื่อให้เป็นการ "ส่งต่อ" รายการเดิม ไม่ใช่สร้างใหม่
         document.getElementById('formId').value = item.formId;
-        document.getElementById('assetTag').value = item.assetTag || '';
-        document.getElementById('serialNo').value = item.serialNo || '';
+        
+        const assets = (item.assetTag || '').split('\n').map(a => a.replace(/^\d+\.\s*/, ''));
+        const sns = (item.serialNo || '').split('\n').map(s => s.replace(/^\d+\.\s*/, ''));
+
+        const container = document.getElementById('itemsContainer');
+        container.innerHTML = ''; 
+
+        for (let i = 0; i < assets.length; i++) {
+            const row = document.createElement('div');
+            row.className = 'form-row item-row';
+            row.innerHTML = `
+                <div class="form-group">
+                    <label>Asset Tag: <span style="color:red;">*</span></label>
+                    <input type="text" class="asset-tag" required value="${assets[i] || ''}" placeholder="e.g., LAP-2026-001">
+                </div>
+                <div class="form-group">
+                    <label>Serial Number (S/N): <span style="color:red;">*</span></label>
+                    <input type="text" class="serial-no" required value="${sns[i] || ''}" placeholder="e.g., SN-987654321">
+                </div>
+                <div class="form-group" style="flex: 0 0 auto; display: flex; align-items: flex-end; padding-bottom: 4px;">
+                    <button type="button" class="btn-remove-item" onclick="removeItemRow(this)">❌</button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+        updateRemoveButtons(); 
+
         document.getElementById('senderName').value = item.senderName || '';
         document.getElementById('receiverName').value = item.receiverName || '';
         document.getElementById('condition').value = item.condition || 'Good Condition';
         document.getElementById('note').value = item.note || '';
 
-        // รูปอุปกรณ์: โหลดรูปเดิมกลับมาแสดง (ถ้ามี) ผู้ใช้สามารถถ่าย/อัปโหลดรูปใหม่ทับได้ทันที
         const photoPreview = document.getElementById('photoPreview');
         const photoPlaceholder = document.getElementById('photoPlaceholder');
         if (item.photoBase64) {
@@ -1044,16 +1192,13 @@
             photoPlaceholder.style.display = 'block';
         }
 
-        // ลายเซ็น: เคลียร์ผ้าใบให้ผู้รับเซ็นใหม่เสมอ (ระบบไม่เก็บลายเซ็นของ Draft ไว้)
         setTimeout(() => {
             resizeCanvas();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }, 100);
         isCanvasSigned = false;
 
-        applyAdminAutofill();
-
-        alert(`กEditing the list ${item.formId}\n\n Please sign your name and/or upload photos of all the equipment, then click "✅ Submit" to confirm the return again`);
+        alert(`Editing the list ${item.formId}\n\n Please sign your name and/or upload photos of all the equipment, then click "✅ Submit" to confirm the return again`);
     }
 
     function renderTable() {
@@ -1066,8 +1211,6 @@
         tbody.innerHTML = '';
         logsData.forEach((item, index) => {
             const tr = document.createElement('tr');
-
-            // รองรับทั้ง status-pending และ status-completed
             const isPending = item.status === 'pending';
 
             let sigHTML;
@@ -1092,33 +1235,32 @@
             }
 
             let actionHTML = `<button class="btn-view-pdf" onclick="viewAsPDF(${index})">View PDF</button>`;
+            const displayTimestamp = formatLocalDate(item.timestamp);
 
+            // ปรับส่วน Asset Tag/S/N และ Receiver ให้เป็นตัวอักษรธรรมดา (Regular) ตามที่ขอ
             tr.innerHTML = `
-                <td><strong>${item.formId}</strong></td>
-                <td>${item.timestamp}</td>
-                <td><strong>${item.assetTag}</strong><br><span class="note-text">S/N: ${item.serialNo}</span></td>
-                <td>${item.senderName}</td>
-                <td><strong>${item.receiverName}</strong></td>
-                <td>${item.condition}</td>
-                <td>${item.note ? item.note : '-'}</td>
-                <td>${sigHTML}</td>
-                <td>${photoHTML}</td>
-                <td>${actionHTML}</td>
+                <td class="log-table-td"><strong class="log-table-th">${item.formId}</strong></td>
+                <td class="log-table-td">${displayTimestamp}</td>
+                <td class="log-table-td">${item.assetTag}<br><span class="note-text"><span class="log-table-th" style="font-size:11px;">S/N:</span><br>${item.serialNo}</span></td>
+                <td class="log-table-td">${item.senderName}</td>
+                <td class="log-table-td">${item.receiverName}</td>
+                <td class="log-table-td">${item.condition}</td>
+                <td class="log-table-td">${item.note ? item.note : '-'}</td>
+                <td class="log-table-td">${sigHTML}</td>
+                <td class="log-table-td">${photoHTML}</td>
+                <td class="log-table-td">${actionHTML}</td>
             `;
             tbody.appendChild(tr);
         });
     }
 
-    // 3. ฟังก์ชันสร้าง PDF จากข้อมูล record แล้วเปิดขึ้นมาให้ดู/ปริ้นได้ทันที
     function loadImageInfo(url) {
-        // คืนค่า dataUrl พร้อมขนาดจริงของรูป (width/height) เพื่อเอาไปคำนวณอัตราส่วนไม่ให้รูปยืด/บีบ
         return new Promise((resolve) => {
             if (!url) { resolve(null); return; }
             const img = new Image();
             img.crossOrigin = 'Anonymous';
             img.onload = function () {
                 if (url.startsWith('data:')) {
-                    // เป็น dataURL อยู่แล้ว ใช้ค่าเดิมได้เลย ไม่ต้อง redraw ซ้ำ
                     resolve({ dataUrl: url, width: img.naturalWidth, height: img.naturalHeight });
                     return;
                 }
@@ -1130,7 +1272,7 @@
                 try {
                     resolve({ dataUrl: c.toDataURL('image/png'), width: img.naturalWidth, height: img.naturalHeight });
                 } catch (e) {
-                    resolve(null); // โหลดรูปข้าม origin ไม่ได้ ก็ข้ามไป ไม่ทำให้ PDF พังทั้งฉบับ
+                    resolve(null); 
                 }
             };
             img.onerror = function () { resolve(null); };
@@ -1138,21 +1280,31 @@
         });
     }
 
-    // คำนวณขนาดรูปให้พอดีกรอบโดยคงอัตราส่วนเดิม (object-fit: contain) แล้วจัดกึ่งกลาง
     function fitContain(imgW, imgH, maxW, maxH) {
         const ratio = Math.min(maxW / imgW, maxH / imgH);
         return { w: imgW * ratio, h: imgH * ratio };
     }
 
-    // สร้างเอกสาร PDF จากข้อมูล record หนึ่งแถว
     async function buildHandoverPdf(item) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: 'mm', format: 'a4' });
         const pageWidth = doc.internal.pageSize.getWidth();
         const marginX = 15;
-        let y = 20;
+        let y = 15;
 
-        // หัวกระดาษ
+        const logoInfo = await loadImageInfo(LOGO_IMAGE_URL);
+        if (logoInfo) {
+            const logoMaxWidth = 35;
+            const { w, h } = fitContain(logoInfo.width, logoInfo.height, logoMaxWidth, 20);
+            const logoX = (pageWidth - w) / 2;
+            try {
+                doc.addImage(logoInfo.dataUrl, 'PNG', logoX, y, w, h, undefined, 'FAST');
+                y += h + 6;
+            } catch (e) {
+                y += 5;
+            }
+        }
+
         doc.setFontSize(16);
         doc.setFont(undefined, 'bold');
         doc.text('Equipment Handover Form', pageWidth / 2, y, { align: 'center' });
@@ -1162,14 +1314,13 @@
         doc.setTextColor(100);
         doc.text(`Form ID: ${item.formId}`, pageWidth / 2, y, { align: 'center' });
         doc.setTextColor(0);
-        y += 10;
+        y += 8;
         doc.setDrawColor(200);
         doc.line(marginX, y, pageWidth - marginX, y);
-        y += 10;
+        y += 8;
 
-        // ตารางข้อมูลหลัก
         const rows = [
-            ['Timestamp', item.timestamp || '-'],
+            ['Timestamp', formatLocalDate(item.timestamp) || '-'],
             ['Asset Tag', item.assetTag || '-'],
             ['Serial Number', item.serialNo || '-'],
             ['Handed Over By (Sender)', item.senderName || '-'],
@@ -1184,6 +1335,7 @@
             doc.setFont(undefined, 'bold');
             doc.text(`${label}:`, marginX, y);
             doc.setFont(undefined, 'normal');
+            
             const valueLines = doc.splitTextToSize(String(value), pageWidth - marginX - 70);
             doc.text(valueLines, marginX + 55, y);
             y += Math.max(7, valueLines.length * 6);
@@ -1192,7 +1344,11 @@
         y += 6;
         const colWidth = (pageWidth - marginX * 2 - 10) / 2;
 
-        // ลายเซ็น
+        if (y + 50 > doc.internal.pageSize.getHeight()) {
+            doc.addPage();
+            y = 20;
+        }
+
         doc.setFont(undefined, 'bold');
         doc.text('Recipient Signature:', marginX, y);
         const sigInfo = await loadImageInfo(item.sigDataUrl);
@@ -1212,7 +1368,6 @@
             doc.setFontSize(11);
         }
 
-        // รูปอุปกรณ์
         const photoX = marginX + colWidth + 10;
         doc.setFont(undefined, 'bold');
         doc.text('Device Photo:', photoX, y);
@@ -1265,20 +1420,14 @@
         }
     }
 
-    // 5. ป๊อปอัพแสดงตัวอย่าง PDF ก่อน แล้วค่อยมีปุ่มปริ้นแยกต่างหาก
-    let pdfModalReady = false; // true เมื่อ iframe โหลด PDF เสร็จสมบูรณ์แล้ว ใช้กันการสั่งพิมพ์ก่อนโหลดเสร็จ
+    let pdfModalReady = false; 
 
     function openPdfModal(blobUrl, formId) {
         pdfModalReady = false;
         document.getElementById('pdfModalTitle').innerText = `Preview: ${formId}`;
         const frame = document.getElementById('pdfModalFrame');
 
-        // สำคัญ: ต้องรอ iframe โหลด PDF เสร็จก่อน ไม่งั้นกดปริ้นเร็วเกินไปจะไม่มีอะไรให้พิมพ์
-        // (เป็นสาเหตุหลักที่ปุ่ม Print ใช้ไม่ได้ในเวอร์ชันก่อนหน้า)
         frame.onload = function () { pdfModalReady = true; };
-
-        // เติม #toolbar=0&navpanes=0 เพื่อซ่อนแถบเครื่องมือ/ป้ายเมนูของ PDF viewer ในตัวเบราว์เซอร์
-        // (ใช้ได้กับ Chrome/Edge เป็นหลัก บางเบราว์เซอร์อาจไม่รองรับการซ่อนทั้งหมด)
         frame.src = blobUrl + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH';
         document.getElementById('pdfModalOverlay').style.display = 'flex';
     }
@@ -1288,7 +1437,7 @@
         document.getElementById('pdfModalFrame').src = 'about:blank';
         pdfModalReady = false;
         if (currentPdfBlobUrl) {
-            URL.revokeObjectURL(currentPdfBlobUrl); // คืนหน่วยความจำ
+            URL.revokeObjectURL(currentPdfBlobUrl); 
             currentPdfBlobUrl = "";
         }
     }
@@ -1297,11 +1446,9 @@
         const frame = document.getElementById('pdfModalFrame');
         try {
             frame.contentWindow.focus();
-            frame.contentWindow.print(); // สั่งปริ้นจากตัว PDF viewer ที่ฝังอยู่ในป๊อปอัพโดยตรง (ไม่ใช้ iframe ซ่อน)
+            frame.contentWindow.print(); 
         } catch (e) {
-            // เผื่อบางเบราว์เซอร์ (เช่น Safari/มือถือบางรุ่น) ไม่ยอมให้สั่งปริ้นผ่าน iframe โดยตรง
-            // ให้ fallback เปิดแท็บใหม่แทน เพื่อให้ผู้ใช้กดปริ้นเองจากหน้าต่างนั้นได้
-            console.warn('iframe print ไม่สำเร็จ, fallback เปิดแท็บใหม่แทน:', e);
+            console.warn('iframe print ไม่สำเร็จ:', e);
             window.open(currentPdfBlobUrl, '_blank');
         }
     }
@@ -1310,7 +1457,6 @@
         if (pdfModalReady) {
             doPrint();
         } else {
-            // ถ้า PDF ยังโหลดไม่เสร็จ (กดปริ้นเร็วเกินไป) รอสักครู่แล้วค่อยลองพิมพ์
             setTimeout(() => { doPrint(); }, 400);
         }
     }
@@ -1325,8 +1471,6 @@
         }
     }
     
-    // หมายเหตุ: เดิมมีการโหลดประวัติ/รายชื่อ Users ทันทีตอนเปิดหน้าเว็บ
-    // ตอนนี้ย้ายไปเรียกใน initAppAfterLogin() แทน เพื่อให้โหลดข้อมูลหลังล็อกอินสำเร็จเท่านั้น
     window.onload = function() {
         document.getElementById('loginUser').focus();
     };
