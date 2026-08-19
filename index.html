@@ -1053,7 +1053,7 @@
 
         applyAdminAutofill();
 
-        alert(`กำลังแก้ไขรายการ ${item.formId}\n\nกรุณาเซ็นชื่อผู้รับ และ/หรือ อัปโหลดรูปอุปกรณ์ให้ครบ แล้วกด "✅ Submit" เพื่อยืนยันการส่งคืนอีกครั้ง`);
+        alert(`กEditing the list ${item.formId}\n\n Please sign your name and/or upload photos of all the equipment, then click "✅ Submit" to confirm the return again`);
     }
 
     function renderTable() {
@@ -1091,7 +1091,7 @@
                 photoHTML = `-`;
             }
 
-            let actionHTML = `<button class="btn-view-pdf" onclick="viewAsPDF(${index})">👁️ View PDF</button>`;
+            let actionHTML = `<button class="btn-view-pdf" onclick="viewAsPDF(${index})">View PDF</button>`;
 
             tr.innerHTML = `
                 <td><strong>${item.formId}</strong></td>
